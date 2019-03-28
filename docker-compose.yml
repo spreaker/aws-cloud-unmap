@@ -8,3 +8,4 @@ services:
     command: [ "sh" ]
     volumes:
       - .:/app:delegated
+      - ~/.aws:/home/app/.aws:ro
