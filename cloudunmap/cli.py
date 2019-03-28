@@ -102,9 +102,8 @@ def main():
     # Reconcile
     while True:
         startTime = time.monotonic()
-
+        # TODO try/except + tests
         reconcile(args.service_id, args.service_region, args.instances_region)
-
         elapsedTime = time.monotonic() - startTime
 
         # Honor frequency
