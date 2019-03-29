@@ -29,7 +29,7 @@ setup(
   keywords         = ['aws', 'cloud map'],
   classifiers      = [],
   python_requires  = ' >= 3',
-  install_requires = [requirements],
+  install_requires = requirements,
   entry_points     = {
     'console_scripts': [
         'aws-cloud-unmap=cloudunmap.cli:main',
