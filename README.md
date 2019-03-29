@@ -17,7 +17,7 @@ How the matching is done:
 
 Safety countermeasures:
 - The application logs a warning and do **not** deregister the unmatching instances, if after the deregistering the service would have been left with no instances registered
-- The application shutdown gracefully on `SIGINT` and `SIGTERM`. If such signals are received during a reconciling, it completed the on-going reconcile before exiting
+- The application shutdown gracefully on `SIGINT` and `SIGTERM`. If such signals are received during a reconciling, it completes the on-going reconcile before exiting
 
 
 ## How to run it
