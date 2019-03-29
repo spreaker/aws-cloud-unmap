@@ -2,6 +2,7 @@ import argparse
 import logging
 import time
 import sys
+import signal
 from typing import List
 from pythonjsonlogger import jsonlogger
 from .unmap import unmapTerminatedInstancesFromService
@@ -30,6 +31,8 @@ def reconcile(serviceId: str, serviceRegion: str, instancesRegion: List[str]):
 
 
 def main(args):
+    shutdown = False
+
     # Init logger
     logHandler = logging.StreamHandler()
     formatter = jsonlogger.JsonFormatter("(asctime) (levelname) (message)", datefmt="%Y-%m-%d %H:%M:%S")
@@ -39,18 +42,31 @@ def main(args):
     logger.addHandler(logHandler)
     logger.setLevel(args.log_level)
 
+    # Register signal handler
+    def _on_sigterm(signal, frame):
+        logger.info("Shutting down")
+        nonlocal shutdown
+        shutdown = True
+
+    signal.signal(signal.SIGINT, _on_sigterm)
+    signal.signal(signal.SIGTERM, _on_sigterm)
+
     # Reconcile
     if args.single_run:
         reconcile(args.service_id, args.service_region, args.instances_region)
     else:
-        while True:
+        while not shutdown:
             startTime = time.monotonic()
             reconcile(args.service_id, args.service_region, args.instances_region)
-            elapsedTime = time.monotonic() - startTime
 
             # Honor frequency
-            if elapsedTime < args.frequency_sec:
-                time.sleep(args.frequency_sec - elapsedTime)
+            while not shutdown:
+                elapsedTime = time.monotonic() - startTime
+
+                if elapsedTime < args.frequency_sec:
+                    time.sleep(min(1, args.frequency_sec - elapsedTime))
+                else:
+                    break
 
 
 if __name__ == '__main__':
