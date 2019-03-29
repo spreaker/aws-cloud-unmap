@@ -68,7 +68,7 @@ def unmapTerminatedInstancesFromService(serviceId: str, serviceRegion: str, inst
         return
 
     # Remove all unmatching instances from the service
-    logger.info(f"Found {len(unmatchingInstances)} in service {serviceId} not matching any running EC2 instance in {instancesRegions}")
+    logger.info(f"Found {len(unmatchingInstances)} instances in service {serviceId} not matching any running EC2 instance in {instancesRegions}")
 
     for unmatchingInstance in unmatchingInstances:
         logger.warning(f"Deregistering instance {unmatchingInstance['Id']} from service {serviceId} because not matching any running EC2 instance in {instancesRegions}")
