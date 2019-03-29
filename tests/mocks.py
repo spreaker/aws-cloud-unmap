@@ -1,11 +1,11 @@
 from unittest.mock import MagicMock
 
 
-def mockBotoSession(clients):
-    sessionMock = MagicMock()
-    sessionMock.client.side_effect = lambda name, **kwargs: clients[name]
+def mockBotoClient(clients):
+    mock = MagicMock()
+    mock.side_effect = lambda name, **kwargs: clients[name]
 
-    return sessionMock
+    return mock
 
 
 def mockServiceInstance(instanceId, ipv4=None):
