@@ -1,6 +1,10 @@
 import sys
 from setuptools import setup
 
+# Version
+version = "1.0.0"
+
+# Requires Python 3
 if sys.version_info.major < 3:
     raise RuntimeError('Installing requires Python 3 or newer')
 
@@ -15,13 +19,13 @@ with open('requirements.txt') as file:
 setup(
   name             = 'aws-cloud-unmap',
   packages         = ['cloudunmap'],
-  version          = '1.0.0',
+  version          = version,
   description      = 'Remove terminated EC2 instances from AWS CloudMap service',
   long_description = long_description,
   author           = 'Marco Pracucci',
   author_email     = 'marco@pracucci.com',
   url              = 'https://github.com/spreaker/aws-cloud-unmap',
-  download_url     = 'https://github.com/spreaker/aws-cloud-unmap/archive/1.0.0.tar.gz',
+  download_url     = f'https://github.com/spreaker/aws-cloud-unmap/archive/{version}.tar.gz',
   keywords         = ['aws', 'cloud map'],
   classifiers      = [],
   python_requires  = ' >= 3',
