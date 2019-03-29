@@ -2,6 +2,7 @@ import unittest
 import boto3
 from botocore.stub import Stubber
 from cloudunmap.aws import listEC2InstancesById, listServiceInstances
+from .mocks import mockEC2Instance, mockServiceInstance
 
 
 class TestAws(unittest.TestCase):
@@ -16,10 +17,7 @@ class TestAws(unittest.TestCase):
         stubber = Stubber(ec2Client)
         stubber.add_response(
             "describe_instances",
-            {"Reservations": [{"Instances": [
-                {"InstanceId": "i-1", "PrivateIpAddress": "172.0.0.1"},
-                {"InstanceId": "i-2", "PrivateIpAddress": "172.0.0.2", "PublicIpAddress": "2.2.2.2"}
-            ]}]},
+            {"Reservations": [{"Instances": [mockEC2Instance("i-1", privateIp="172.0.0.1"), mockEC2Instance("i-2", privateIp="172.0.0.2", publicIp="2.2.2.2")]}]},
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
         stubber.activate()
 
@@ -70,10 +68,7 @@ class TestAws(unittest.TestCase):
         stubber = Stubber(sdClient)
         stubber.add_response(
             "list_instances",
-            {"Instances": [
-                {"Id": "i-1", "Attributes": {"AWS_INSTANCE_IPV4": "172.0.0.1", "AWS_INSTANCE_PORT": "80"}},
-                {"Id": "i-2", "Attributes": {"AWS_INSTANCE_IPV4": "2.2.2.2", "AWS_INSTANCE_PORT": "80"}},
-            ]},
+            {"Instances": [mockServiceInstance("i-1", ipv4="172.0.0.1"), mockServiceInstance("i-2", ipv4="2.2.2.2")]},
             {"ServiceId": "srv-1", "MaxResults": 100})
         stubber.activate()
 
