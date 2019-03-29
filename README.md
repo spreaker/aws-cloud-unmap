@@ -21,6 +21,12 @@ Safety countermeasures:
 
 ## How to run it
 
+You have two options to run it:
+
+1. Manually install and run the [`aws-cloud-unmap` Python package](https://pypi.org/project/aws-cloud-unmap/)
+2. Use the [Docker image available on Docker hub](https://hub.docker.com/u/spreaker/aws-cloud-unmap/)
+
+
 The cli supports the following arguments:
 
 | Argument                                 | Required | Description |
