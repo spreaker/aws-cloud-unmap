@@ -26,6 +26,8 @@ You have two options to run it:
 1. Manually install and run the [`aws-cloud-unmap` Python package](https://pypi.org/project/aws-cloud-unmap/)
    ```
    pip3 install aws-cloud-unmap
+
+   aws-cloud-unmap --service-id srv-12345 --service-region us-east-1 --instances-region us-east-1
    ```
 
 2. Use the [Docker image available on Docker hub](https://hub.docker.com/u/spreaker/aws-cloud-unmap/)
