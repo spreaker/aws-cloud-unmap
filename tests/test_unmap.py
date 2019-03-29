@@ -2,7 +2,7 @@ import unittest
 import boto3
 from unittest.mock import patch
 from botocore.stub import Stubber
-from cloudunmap.unmap import matchServiceInstanceInRunningInstances, reconcile
+from cloudunmap.unmap import matchServiceInstanceInRunningInstances, unmapTerminatedInstancesFromService
 from .mocks import mockBotoSession, mockServiceInstance, mockEC2Instance
 
 
@@ -48,10 +48,10 @@ class TestUnmap(unittest.TestCase):
             {"Id": "i-2", "Attributes": {"AWS_INSTANCE_IPV4": "2.2.2.2"}}, runningInstances))
 
     #
-    # reconcile()
+    # unmapTerminatedInstancesFromService()
     #
 
-    def testReconcileShouldDoNothingIfRegisteredInstancesAreRunning(self):
+    def testUnmapTerminatedInstancesFromServiceShouldDoNothingIfRegisteredInstancesAreRunning(self):
         # Mock Cloud Map client
         self.sdStubber.add_response(
             "list_instances",
@@ -68,12 +68,12 @@ class TestUnmap(unittest.TestCase):
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
 
         with patch("boto3.Session", return_value=self.sessionMock):
-            reconcile(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
+            unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
         self.sdStubber.assert_no_pending_responses()
 
-    def testReconcileShouldDeregisterInstancesNotFound(self):
+    def testUnmapTerminatedInstancesFromServiceShouldDeregisterInstancesNotFound(self):
         # Mock Cloud Map client
         self.sdStubber.add_response(
             "list_instances",
@@ -93,12 +93,12 @@ class TestUnmap(unittest.TestCase):
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
 
         with patch("boto3.Session", return_value=self.sessionMock):
-            reconcile(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
+            unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
         self.sdStubber.assert_no_pending_responses()
 
-    def testReconcileShouldDeregisterInstancesFoundButWithDifferentIp(self):
+    def testUnmapTerminatedInstancesFromServiceShouldDeregisterInstancesFoundButWithDifferentIp(self):
         # Mock Cloud Map client
         self.sdStubber.add_response(
             "list_instances",
@@ -119,12 +119,12 @@ class TestUnmap(unittest.TestCase):
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
 
         with patch("boto3.Session", return_value=self.sessionMock):
-            reconcile(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
+            unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
         self.sdStubber.assert_no_pending_responses()
 
-    def testReconcileShouldDeregisterInstancesFoundButTerminating(self):
+    def testUnmapTerminatedInstancesFromServiceShouldDeregisterInstancesFoundButTerminating(self):
         # Mock Cloud Map client
         self.sdStubber.add_response(
             "list_instances",
@@ -145,12 +145,12 @@ class TestUnmap(unittest.TestCase):
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
 
         with patch("boto3.Session", return_value=self.sessionMock):
-            reconcile(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
+            unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
         self.sdStubber.assert_no_pending_responses()
 
-    def testReconcileShouldDeregisterInstancesFoundButTerminated(self):
+    def testUnmapTerminatedInstancesFromServiceShouldDeregisterInstancesFoundButTerminated(self):
         # Mock Cloud Map client
         self.sdStubber.add_response(
             "list_instances",
@@ -171,12 +171,12 @@ class TestUnmap(unittest.TestCase):
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
 
         with patch("boto3.Session", return_value=self.sessionMock):
-            reconcile(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
+            unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
         self.sdStubber.assert_no_pending_responses()
 
-    def testReconcileShouldSkipRegisteredInstancesWithoutIpv4Attribute(self):
+    def testUnmapTerminatedInstancesFromServiceShouldSkipRegisteredInstancesWithoutIpv4Attribute(self):
         # Mock Cloud Map client
         self.sdStubber.add_response(
             "list_instances",
@@ -192,12 +192,12 @@ class TestUnmap(unittest.TestCase):
             {"Filters": [{"Name": "instance-id", "Values": ["i-1"]}], "MaxResults": 1000})
 
         with patch("boto3.Session", return_value=self.sessionMock):
-            reconcile(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
+            unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
         self.sdStubber.assert_no_pending_responses()
 
-    def testReconcileShouldDoNothingIfAllRegisteredInstancesWouldBeDeregistered(self):
+    def testUnmapTerminatedInstancesFromServiceShouldDoNothingIfAllRegisteredInstancesWouldBeDeregistered(self):
         # Mock Cloud Map client
         self.sdStubber.add_response(
             "list_instances",
@@ -211,12 +211,12 @@ class TestUnmap(unittest.TestCase):
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
 
         with patch("boto3.Session", return_value=self.sessionMock):
-            reconcile(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
+            unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
         self.sdStubber.assert_no_pending_responses()
 
-    def testReconcileShouldSupportMultipleInstancesRegions(self):
+    def testUnmapTerminatedInstancesFromServiceShouldSupportMultipleInstancesRegions(self):
         # Mock Cloud Map client
         self.sdStubber.add_response(
             "list_instances",
@@ -238,7 +238,7 @@ class TestUnmap(unittest.TestCase):
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2", "i-3"]}], "MaxResults": 1000})
 
         with patch("boto3.Session", return_value=self.sessionMock):
-            reconcile(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1", "us-east-1"])
+            unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1", "us-east-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
         self.sdStubber.assert_no_pending_responses()

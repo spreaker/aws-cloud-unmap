@@ -23,7 +23,7 @@ def matchServiceInstanceInRunningInstances(serviceInstance, runningInstances):
     return False
 
 
-def reconcile(serviceId: str, serviceRegion: str, instancesRegions: List[str]):
+def unmapTerminatedInstancesFromService(serviceId: str, serviceRegion: str, instancesRegions: List[str]):
     logger = logging.getLogger()
     logger.info(f"Checking EC2 instances registered to service {serviceId} in {serviceRegion}")
 
