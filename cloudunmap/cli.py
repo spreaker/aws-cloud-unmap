@@ -14,7 +14,7 @@ def parseArguments(argv: List[str]):
     parser.add_argument("--service-id", metavar="ID", required=True, help="AWS CloudMap service ID")
     parser.add_argument("--service-region", metavar="REGION", required=True, help="AWS CloudMap service region")
     parser.add_argument("--instances-region", metavar="REGION", required=True, nargs='+', help="AWS region where EC2 instances should be checked")
-    parser.add_argument("--frequency-sec", metavar="N", required=False, type=int, default=300, help="How frequently the service should be reconciled (in seconds)")
+    parser.add_argument("--frequency", metavar="N", required=False, type=int, default=300, help="How frequently the service should be reconciled (in seconds)")
     parser.add_argument("--single-run", required=False, default=False, action="store_true", help="Run a single reconcile and then exit")
     parser.add_argument("--log-level", help="Minimum log level. Accepted values are: DEBUG, INFO, WARNING, ERROR, CRITICAL", default="INFO")
 
@@ -63,8 +63,8 @@ def main(args):
             while not shutdown:
                 elapsedTime = time.monotonic() - startTime
 
-                if elapsedTime < args.frequency_sec:
-                    time.sleep(min(1, args.frequency_sec - elapsedTime))
+                if elapsedTime < args.frequency:
+                    time.sleep(min(1, args.frequency - elapsedTime))
                 else:
                     break
 

@@ -28,7 +28,7 @@ The cli supports the following arguments:
 | `--service-id ID`                        | yes      | AWS CloudMap service ID |
 | `--service-region REGION`                | yes      | AWS CloudMap service region |
 | `--instances-region REGION [REGION ...]` | yes      | AWS regions where EC2 instances should be checked |
-| `--frequency-sec N`                      |          | How frequently the service should be reconciled (in seconds). Defaults to `300` sec |
+| `--frequency N`                          |          | How frequently the service should be reconciled (in seconds). Defaults to `300` sec |
 | `--single-run`                           |          | Run a single reconcile and then exit |
 | `--log-level LOG_LEVEL`                  |          | Minimum log level. Accepted values are: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. Defaults to `INFO` |
 
