@@ -23,7 +23,7 @@ class TestCli(unittest.TestCase):
     # main()
     #
 
-    def testMainShouldReconcileServiceAndDeregisterInstancesNotFound(self):
+    def testMainShouldReconcileService(self):
         # Mock Cloud Map client
         self.sdStubber.add_response(
             "list_instances",
@@ -41,6 +41,16 @@ class TestCli(unittest.TestCase):
                 mockEC2Instance("i-1", privateIp="172.0.0.1"),
             ]}]},
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
+
+        with patch("boto3.Session", return_value=self.sessionMock):
+            main(parseArguments(["--service-id", "srv-1", "--service-region", "eu-west-1", "--instances-region", "eu-west-1", "--single-run"]))
+
+        self.ec2Stubber.assert_no_pending_responses()
+        self.sdStubber.assert_no_pending_responses()
+
+    def testMainShouldGracefullyHandleAnErrorWhileCallingAwsAPI(self):
+        # Mock Cloud Map client
+        self.sdStubber.add_client_error("list_instances")
 
         with patch("boto3.Session", return_value=self.sessionMock):
             main(parseArguments(["--service-id", "srv-1", "--service-region", "eu-west-1", "--instances-region", "eu-west-1", "--single-run"]))

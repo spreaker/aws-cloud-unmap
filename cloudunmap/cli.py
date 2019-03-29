@@ -2,11 +2,12 @@ import argparse
 import logging
 import time
 import sys
+from typing import List
 from pythonjsonlogger import jsonlogger
 from .unmap import unmapTerminatedInstancesFromService
 
 
-def parseArguments(argv):
+def parseArguments(argv: List[str]):
     # Parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("--service-id", metavar="ID", required=True, help="AWS CloudMap service ID")
@@ -19,21 +20,32 @@ def parseArguments(argv):
     return parser.parse_args(argv)
 
 
+def reconcile(serviceId: str, serviceRegion: str, instancesRegion: List[str]):
+    logger = logging.getLogger()
+
+    try:
+        unmapTerminatedInstancesFromService(serviceId, serviceRegion, instancesRegion)
+    except Exception as error:
+        logger.error(f"An error occurred while reconciling service {serviceId}: {str(error)}")
+
+
 def main(args):
     # Init logger
     logHandler = logging.StreamHandler()
     formatter = jsonlogger.JsonFormatter("(asctime) (levelname) (message)", datefmt="%Y-%m-%d %H:%M:%S")
     logHandler.setFormatter(formatter)
-    logging.getLogger().addHandler(logHandler)
-    logging.getLogger().setLevel(args.log_level)
+
+    logger = logging.getLogger()
+    logger.addHandler(logHandler)
+    logger.setLevel(args.log_level)
 
     # Reconcile
     if args.single_run:
-        unmapTerminatedInstancesFromService(args.service_id, args.service_region, args.instances_region)
+        reconcile(args.service_id, args.service_region, args.instances_region)
     else:
         while True:
             startTime = time.monotonic()
-            unmapTerminatedInstancesFromService(args.service_id, args.service_region, args.instances_region)
+            reconcile(args.service_id, args.service_region, args.instances_region)
             elapsedTime = time.monotonic() - startTime
 
             # Honor frequency
