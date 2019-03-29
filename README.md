@@ -16,26 +16,21 @@ How the matching is done:
 - A registered instance is skipped (left untouched) if registered without `AWS_INSTANCE_IPV4` attribute
 
 Safety countermeasures:
-- The application logs a warning and do **not** deregister the unmatching instances, if after the deregistering the service would have been left with no instances registered
-- The application shutdown gracefully on `SIGINT` and `SIGTERM`. If such signals are received during a reconciling, it completes the on-going reconcile before exiting
-
+- The application logs a warning and do **not** deregister the unmatching instances, in case that would leave the service without registered instance
+- The application handles graceful shutdown on `SIGINT` and `SIGTERM`. If such signals are received during a reconciling, it would complete the on-going reconcile before exiting
 
 ## How to run it
 
-Available arguments:
+The cli supports the following arguments:
 
-```
---service-id ID       AWS CloudMap service ID
---service-region REGION
-                      AWS CloudMap service region
---instances-region REGION [REGION ...]
-                      AWS region where EC2 instances should be checked
---frequency-sec N     How frequently the service should be reconciled (in seconds)
---single-run          Run a single reconcile and then exit
---log-level LOG_LEVEL
-                      Minimum log level. Accepted values are: DEBUG, INFO,
-                      WARNING, ERROR, CRITICAL
-```
+| Argument                                 | Required | Description |
+| ---------------------------------------- | -------- | ----------- |
+| `--service-id ID`                        | yes      | AWS CloudMap service ID |
+| `--service-region REGION`                | yes      | AWS CloudMap service region |
+| `--instances-region REGION [REGION ...]` | yes      | AWS regions where EC2 instances should be checked |
+| `--frequency-sec N`                      |          | How frequently the service should be reconciled (in seconds). Defaults to `300` sec |
+| `--single-run`                           |          | Run a single reconcile and then exit |
+| `--log-level LOG_LEVEL`                  |          | Minimum log level. Accepted values are: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. Defaults to `INFO` |
 
 
 ## Development
