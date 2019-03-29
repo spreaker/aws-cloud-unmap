@@ -5,7 +5,8 @@
 1. Update version in `setup.py`
 2. Update `CHANGELOG.md`
 3. [Release new version on GitHub](https://github.com/spreaker/aws-cloud-unmap/releases)
-4. Run `python3 setup.py sdist upload -r pypi`
+4. Build package `python3 setup.py sdist`
+5. Publish package `twine upload dist/*`
 
 **Release Docker image**:
 
