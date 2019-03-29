@@ -2,7 +2,7 @@ import sys
 from setuptools import setup
 
 # Version
-version = "1.0.1"
+version = "1.0.3"
 
 # Requires Python 3
 if sys.version_info.major < 3:
@@ -11,10 +11,6 @@ if sys.version_info.major < 3:
 # Read the long description from README.md
 with open('README.md') as file:
     long_description = file.read()
-
-# Read requirements
-with open('requirements.txt') as file:
-    requirements = list(filter(lambda r: r, file.read().split("\n")))
 
 setup(
   name                          = 'aws-cloud-unmap',
@@ -30,10 +26,10 @@ setup(
   keywords                      = ['aws', 'cloud map'],
   classifiers                   = [],
   python_requires               = ' >= 3',
-  install_requires              = requirements,
+  install_requires              = ["boto3==1.9.123", "python-json-logger==0.1.10"],
   entry_points                  = {
     'console_scripts': [
-        'aws-cloud-unmap=cloudunmap.cli:main',
+        'aws-cloud-unmap=cloudunmap.cli:run',
     ]
   }
 )

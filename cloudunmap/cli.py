@@ -69,5 +69,9 @@ def main(args):
                     break
 
 
-if __name__ == '__main__':
+def run():
     main(parseArguments(sys.argv[1:]))
+
+
+if __name__ == '__main__':
+    run()
