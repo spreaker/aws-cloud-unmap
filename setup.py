@@ -27,7 +27,13 @@ setup(
   classifiers                   = [],
   python_requires               = ' >= 3',
   install_requires              = ["boto3==1.9.123", "python-json-logger==0.1.10"],
-  entry_points                  = {
+  extras_require = {
+    'dev': [
+      'flake8==3.7.7',
+      'twine==1.13.0'
+    ]
+  },
+  entry_points = {
     'console_scripts': [
         'aws-cloud-unmap=cloudunmap.cli:run',
     ]

@@ -1,2 +1,0 @@
-# Install requirements from setup.py
--e .
