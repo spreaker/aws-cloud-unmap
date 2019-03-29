@@ -3,7 +3,7 @@ import boto3
 from unittest.mock import patch
 from botocore.stub import Stubber
 from cloudunmap.cli import main, parseArguments
-from .mocks import mockBotoSession, mockServiceInstance, mockEC2Instance
+from .mocks import mockBotoClient, mockServiceInstance, mockEC2Instance
 
 
 class TestCli(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestCli(unittest.TestCase):
         self.ec2Stubber = Stubber(self.ec2Client)
         self.ec2Stubber.activate()
 
-        self.sessionMock = mockBotoSession({"ec2": self.ec2Client, "servicediscovery": self.sdClient})
+        self.botoClientMock = mockBotoClient({"ec2": self.ec2Client, "servicediscovery": self.sdClient})
 
     #
     # main()
@@ -42,7 +42,7 @@ class TestCli(unittest.TestCase):
             ]}]},
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
 
-        with patch("boto3.Session", return_value=self.sessionMock):
+        with patch("boto3.client", side_effect=self.botoClientMock):
             main(parseArguments(["--service-id", "srv-1", "--service-region", "eu-west-1", "--instances-region", "eu-west-1", "--single-run"]))
 
         self.ec2Stubber.assert_no_pending_responses()
@@ -52,7 +52,7 @@ class TestCli(unittest.TestCase):
         # Mock Cloud Map client
         self.sdStubber.add_client_error("list_instances")
 
-        with patch("boto3.Session", return_value=self.sessionMock):
+        with patch("boto3.client", side_effect=self.botoClientMock):
             main(parseArguments(["--service-id", "srv-1", "--service-region", "eu-west-1", "--instances-region", "eu-west-1", "--single-run"]))
 
         self.ec2Stubber.assert_no_pending_responses()
