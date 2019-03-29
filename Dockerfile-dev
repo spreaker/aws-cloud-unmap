@@ -1,0 +1,23 @@
+FROM alpine:3.9
+
+# Installing required packages
+RUN apk add --update --no-cache \
+    python3~=3.6
+
+# Install app code
+RUN mkdir /app
+ADD ./requirements*.txt ./setup.* README.md /app/
+ADD cloudunmap    /app/cloudunmap
+ADD tests         /app/tests
+
+# Install app deps
+RUN cd /app && pip3 install -r requirements-dev.txt
+
+# Run as non-root
+RUN adduser app -S -u 1000
+USER app
+
+# Switch the cwd to /app so that running app and tests is easier
+WORKDIR /app
+
+CMD [ "python3", "-m", "cloudunmap.cli" ]
