@@ -1,9 +1,11 @@
 import unittest
 import boto3
+import time
 from unittest.mock import patch
 from botocore.stub import Stubber
 from cloudunmap.cli import main, parseArguments
 from .mocks import mockBotoClient, mockServiceInstance, mockEC2Instance
+from prometheus_client.registry import REGISTRY as prometheusDefaultRegistry
 
 
 class TestCli(unittest.TestCase):
@@ -45,6 +47,10 @@ class TestCli(unittest.TestCase):
         with patch("boto3.client", side_effect=self.botoClientMock):
             main(parseArguments(["--service-id", "srv-1", "--service-region", "eu-west-1", "--instances-region", "eu-west-1", "--single-run"]))
 
+        # Check exported metrics
+        self.assertEqual(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_up", labels={"service_id": "srv-1"}), 1)
+        self.assertAlmostEqual(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_last_reconcile_timestamp_seconds", labels={"service_id": "srv-1"}), time.time(), delta=2)
+
         self.ec2Stubber.assert_no_pending_responses()
         self.sdStubber.assert_no_pending_responses()
 
@@ -54,6 +60,33 @@ class TestCli(unittest.TestCase):
 
         with patch("boto3.client", side_effect=self.botoClientMock):
             main(parseArguments(["--service-id", "srv-1", "--service-region", "eu-west-1", "--instances-region", "eu-west-1", "--single-run"]))
+
+        # Check exported metrics
+        self.assertEqual(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_up", labels={"service_id": "srv-1"}), 1)
+        self.assertIsNone(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_last_reconcile_timestamp_seconds", labels={"service_id": "srv-1"}))
+
+        self.ec2Stubber.assert_no_pending_responses()
+        self.sdStubber.assert_no_pending_responses()
+
+    def testMainShouldDoNotDeregisterInstancesIfAllRegisteredInstancesWouldBeDeregistered(self):
+        # Mock Cloud Map client
+        self.sdStubber.add_response(
+            "list_instances",
+            {"Instances": [mockServiceInstance("i-1", "172.0.0.1"), mockServiceInstance("i-2", "2.2.2.2")]},
+            {"ServiceId": "srv-1", "MaxResults": 100})
+
+        # Mock EC2 client
+        self.ec2Stubber.add_response(
+            "describe_instances",
+            {"Reservations": []},
+            {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
+
+        with patch("boto3.client", side_effect=self.botoClientMock):
+            main(parseArguments(["--service-id", "srv-1", "--service-region", "eu-west-1", "--instances-region", "eu-west-1", "--single-run"]))
+
+        # Check exported metrics
+        self.assertEqual(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_up", labels={"service_id": "srv-1"}), 1)
+        self.assertIsNone(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_last_reconcile_timestamp_seconds", labels={"service_id": "srv-1"}))
 
         self.ec2Stubber.assert_no_pending_responses()
         self.sdStubber.assert_no_pending_responses()

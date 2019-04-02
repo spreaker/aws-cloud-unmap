@@ -6,6 +6,19 @@ import signal
 from typing import List
 from pythonjsonlogger import jsonlogger
 from .unmap import unmapTerminatedInstancesFromService
+from prometheus_client import start_http_server, Gauge
+
+
+# Prometheus metrics
+upMetric = Gauge(
+    "aws_cloud_unmap_up",
+    "Always 1 - can by used to check if it's running",
+    labelnames=["service_id"])
+
+lastReconcileTimestampMetric = Gauge(
+    "aws_cloud_unmap_last_reconcile_timestamp_seconds",
+    "The epoch (seconds) of when a the service has been successfully reconciled the last time",
+    labelnames=["service_id"])
 
 
 def parseArguments(argv: List[str]):
@@ -16,6 +29,9 @@ def parseArguments(argv: List[str]):
     parser.add_argument("--instances-region", metavar="REGION", required=True, nargs='+', help="AWS region where EC2 instances should be checked")
     parser.add_argument("--frequency", metavar="N", required=False, type=int, default=300, help="How frequently the service should be reconciled (in seconds)")
     parser.add_argument("--single-run", required=False, default=False, action="store_true", help="Run a single reconcile and then exit")
+    parser.add_argument("--prometheus-enabled", required=False, default=False, action="store_true", help="Enable the Prometheus exporter")
+    parser.add_argument("--prometheus-host", required=False, default="127.0.0.1", help="The host at which the Prometheus exporter should listen to")
+    parser.add_argument("--prometheus-port", required=False, default="9100", type=int, help="The port at which the Prometheus exporter should listen to")
     parser.add_argument("--log-level", help="Minimum log level. Accepted values are: DEBUG, INFO, WARNING, ERROR, CRITICAL", default="INFO")
 
     return parser.parse_args(argv)
@@ -25,9 +41,14 @@ def reconcile(serviceId: str, serviceRegion: str, instancesRegion: List[str]):
     logger = logging.getLogger()
 
     try:
-        unmapTerminatedInstancesFromService(serviceId, serviceRegion, instancesRegion)
+        success = unmapTerminatedInstancesFromService(serviceId, serviceRegion, instancesRegion)
     except Exception as error:
         logger.error(f"An error occurred while reconciling service {serviceId}: {str(error)}")
+        success = False
+
+    # Update
+    if success:
+        lastReconcileTimestampMetric.labels(serviceId).set(int(time.time()))
 
 
 def main(args):
@@ -50,6 +71,14 @@ def main(args):
 
     signal.signal(signal.SIGINT, _on_sigterm)
     signal.signal(signal.SIGTERM, _on_sigterm)
+
+    # Start Prometheus exporter
+    if args.prometheus_enabled:
+        start_http_server(args.prometheus_port, args.prometheus_host)
+        logger.info("Prometheus exporter listening on {host}:{port}".format(port=args.prometheus_port, host=args.prometheus_host))
+
+    # Set the up metric value, which will be steady to 1 for the entire app lifecycle
+    upMetric.labels(args.service_id).set(1)
 
     # Reconcile
     if args.single_run:

@@ -23,7 +23,7 @@ def matchServiceInstanceInRunningInstances(serviceInstance, runningInstances):
     return False
 
 
-def unmapTerminatedInstancesFromService(serviceId: str, serviceRegion: str, instancesRegions: List[str]):
+def unmapTerminatedInstancesFromService(serviceId: str, serviceRegion: str, instancesRegions: List[str]) -> bool:
     logger = logging.getLogger()
     logger.info(f"Checking EC2 instances registered to service {serviceId} in {serviceRegion}")
 
@@ -63,7 +63,7 @@ def unmapTerminatedInstancesFromService(serviceId: str, serviceRegion: str, inst
     # from the service
     if len(unmatchingInstances) >= len(serviceInstances):
         logger.warning(f"All instances registered to service {serviceId} appear to not match any running EC2 instance in {instancesRegions}, but skipping deregistering as safe protection")
-        return
+        return False
 
     # Remove all unmatching instances from the service
     logger.info(f"Found {len(unmatchingInstances)} instances in service {serviceId} not matching any running EC2 instance in {instancesRegions}")
@@ -73,3 +73,4 @@ def unmapTerminatedInstancesFromService(serviceId: str, serviceRegion: str, inst
         sdClient.deregister_instance(ServiceId=serviceId, InstanceId=unmatchingInstance["Id"])
 
     logger.info(f"Checked EC2 instances registered to service {serviceId} in {serviceRegion}")
+    return True
