@@ -16,7 +16,7 @@ upMetric = Gauge(
     labelnames=["service_id"])
 
 lastReconcileTimestampMetric = Gauge(
-    "aws_cloud_unmap_last_reconcile_timestamp_seconds",
+    "aws_cloud_unmap_last_reconcile_success_timestamp_seconds",
     "The epoch (seconds) of when a the service has been successfully reconciled the last time",
     labelnames=["service_id"])
 

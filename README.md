@@ -56,10 +56,10 @@ The cli supports the following arguments:
 
 The application features an integrated Prometheus exporter. The following metrics are exported:
 
-| Metric name                                        | Labels       | Description |
-| -------------------------------------------------- | ------------ | ----------- |
-| `aws_cloud_unmap_up`                               | `service_id` | Always `1`: can be used to check if it's running |
-| `aws_cloud_unmap_last_reconcile_timestamp_seconds` | `service_id` | The epoch (seconds) of when a the service has been successfully reconciled the last time |
+| Metric name                                                | Labels       | Description |
+| ---------------------------------------------------------- | ------------ | ----------- |
+| `aws_cloud_unmap_up`                                       | `service_id` | Always `1`: can be used to check if it's running |
+| `aws_cloud_unmap_last_reconcile_success_timestamp_seconds` | `service_id` | The epoch (seconds) of when a the service has been successfully reconciled the last time |
 
 
 ## Development

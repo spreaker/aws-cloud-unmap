@@ -49,7 +49,7 @@ class TestCli(unittest.TestCase):
 
         # Check exported metrics
         self.assertEqual(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_up", labels={"service_id": "srv-1"}), 1)
-        self.assertAlmostEqual(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_last_reconcile_timestamp_seconds", labels={"service_id": "srv-1"}), time.time(), delta=2)
+        self.assertAlmostEqual(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_last_reconcile_success_timestamp_seconds", labels={"service_id": "srv-1"}), time.time(), delta=2)
 
         self.ec2Stubber.assert_no_pending_responses()
         self.sdStubber.assert_no_pending_responses()
@@ -63,7 +63,7 @@ class TestCli(unittest.TestCase):
 
         # Check exported metrics
         self.assertEqual(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_up", labels={"service_id": "srv-1"}), 1)
-        self.assertIsNone(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_last_reconcile_timestamp_seconds", labels={"service_id": "srv-1"}))
+        self.assertIsNone(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_last_reconcile_success_timestamp_seconds", labels={"service_id": "srv-1"}))
 
         self.ec2Stubber.assert_no_pending_responses()
         self.sdStubber.assert_no_pending_responses()
@@ -86,7 +86,7 @@ class TestCli(unittest.TestCase):
 
         # Check exported metrics
         self.assertEqual(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_up", labels={"service_id": "srv-1"}), 1)
-        self.assertIsNone(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_last_reconcile_timestamp_seconds", labels={"service_id": "srv-1"}))
+        self.assertIsNone(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_last_reconcile_success_timestamp_seconds", labels={"service_id": "srv-1"}))
 
         self.ec2Stubber.assert_no_pending_responses()
         self.sdStubber.assert_no_pending_responses()
