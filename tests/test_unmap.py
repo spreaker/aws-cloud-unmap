@@ -3,7 +3,7 @@ import boto3
 from unittest.mock import patch
 from botocore.stub import Stubber
 from cloudunmap.unmap import matchServiceInstanceInRunningInstances, unmapTerminatedInstancesFromService
-from .mocks import mockBotoSession, mockServiceInstance, mockEC2Instance
+from .mocks import mockBotoClient, mockServiceInstance, mockEC2Instance
 
 
 class TestUnmap(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestUnmap(unittest.TestCase):
         self.ec2Stubber = Stubber(self.ec2Client)
         self.ec2Stubber.activate()
 
-        self.sessionMock = mockBotoSession({"ec2": self.ec2Client, "servicediscovery": self.sdClient})
+        self.botoClientMock = mockBotoClient({"ec2": self.ec2Client, "servicediscovery": self.sdClient})
 
     #
     # matchServiceInstanceInRunningInstances()
@@ -67,7 +67,7 @@ class TestUnmap(unittest.TestCase):
             ]}]},
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
 
-        with patch("boto3.Session", return_value=self.sessionMock):
+        with patch("boto3.client", side_effect=self.botoClientMock):
             unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
@@ -92,7 +92,7 @@ class TestUnmap(unittest.TestCase):
             ]}]},
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
 
-        with patch("boto3.Session", return_value=self.sessionMock):
+        with patch("boto3.client", side_effect=self.botoClientMock):
             unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
@@ -118,7 +118,7 @@ class TestUnmap(unittest.TestCase):
             ]}]},
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
 
-        with patch("boto3.Session", return_value=self.sessionMock):
+        with patch("boto3.client", side_effect=self.botoClientMock):
             unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
@@ -144,7 +144,7 @@ class TestUnmap(unittest.TestCase):
             ]}]},
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
 
-        with patch("boto3.Session", return_value=self.sessionMock):
+        with patch("boto3.client", side_effect=self.botoClientMock):
             unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
@@ -170,7 +170,7 @@ class TestUnmap(unittest.TestCase):
             ]}]},
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
 
-        with patch("boto3.Session", return_value=self.sessionMock):
+        with patch("boto3.client", side_effect=self.botoClientMock):
             unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
@@ -191,7 +191,7 @@ class TestUnmap(unittest.TestCase):
             ]}]},
             {"Filters": [{"Name": "instance-id", "Values": ["i-1"]}], "MaxResults": 1000})
 
-        with patch("boto3.Session", return_value=self.sessionMock):
+        with patch("boto3.client", side_effect=self.botoClientMock):
             unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
@@ -210,7 +210,7 @@ class TestUnmap(unittest.TestCase):
             {"Reservations": []},
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2"]}], "MaxResults": 1000})
 
-        with patch("boto3.Session", return_value=self.sessionMock):
+        with patch("boto3.client", side_effect=self.botoClientMock):
             unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1"])
 
         self.ec2Stubber.assert_no_pending_responses()
@@ -237,7 +237,7 @@ class TestUnmap(unittest.TestCase):
             {"Reservations": [{"Instances": [mockEC2Instance("i-2", publicIp="2.2.2.2")]}]},
             {"Filters": [{"Name": "instance-id", "Values": ["i-1", "i-2", "i-3"]}], "MaxResults": 1000})
 
-        with patch("boto3.Session", return_value=self.sessionMock):
+        with patch("boto3.client", side_effect=self.botoClientMock):
             unmapTerminatedInstancesFromService(serviceId="srv-1", serviceRegion="eu-west-1", instancesRegions=["eu-west-1", "us-east-1"])
 
         self.ec2Stubber.assert_no_pending_responses()

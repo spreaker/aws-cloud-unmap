@@ -18,7 +18,7 @@ def listEC2InstancesById(instanceIds: List[str], ec2Client):
 
         for reservation in page["Reservations"]:
             if "Instances" in reservation:
-                instances += reservation["Instances"]
+                instances.extend(reservation["Instances"])
 
     return instances
 
@@ -31,6 +31,6 @@ def listServiceInstances(serviceId: str, sdClient):
 
     # Pick instances from all pages
     for page in paginator.paginate(ServiceId=serviceId, PaginationConfig={"PageSize": 100}):
-        instances += page["Instances"]
+        instances.extend(page["Instances"])
 
     return instances

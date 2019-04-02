@@ -29,13 +29,12 @@ def unmapTerminatedInstancesFromService(serviceId: str, serviceRegion: str, inst
 
     # Customize the boto client config
     botoConfig = botocore.client.Config(connect_timeout=5, read_timeout=15, retries={"max_attempts": 2})
-    botoSession = boto3.Session()
 
     # Instance Cloud Map client
-    sdClient = botoSession.client("servicediscovery", config=botoConfig, region_name=serviceRegion)
+    sdClient = boto3.client("servicediscovery", config=botoConfig, region_name=serviceRegion)
 
     # Instance EC2 clients
-    ec2Clients = [botoSession.client("ec2", config=botoConfig, region_name=region) for region in instancesRegions]
+    ec2Clients = [boto3.client("ec2", config=botoConfig, region_name=region) for region in instancesRegions]
 
     # List registered instances on CloudMap
     serviceInstances = listServiceInstances(serviceId, sdClient)
@@ -50,7 +49,6 @@ def unmapTerminatedInstancesFromService(serviceId: str, serviceRegion: str, inst
 
     for ec2Client in ec2Clients:
         instances = listEC2InstancesById(serviceInstancesId, ec2Client)
-
         # Filter out terminated instances
         instances = list(filter(lambda i: i["State"]["Name"] != "shutting-down" and i["State"]["Name"] != "terminated", instances))
 

@@ -19,6 +19,7 @@ Safety countermeasures:
 - The application logs a warning and do **not** deregister the unmatching instances, in case that would leave the service without registered instance
 - The application handles graceful shutdown on `SIGINT` and `SIGTERM`. If such signals are received during a reconciling, it would complete the on-going reconcile before exiting
 
+
 ## How to run it
 
 You have two options to run it:
@@ -30,7 +31,7 @@ You have two options to run it:
    aws-cloud-unmap --service-id srv-12345 --service-region us-east-1 --instances-region us-east-1
    ```
 
-2. Use the [Docker image available on Docker hub](https://hub.docker.com/u/spreaker/aws-cloud-unmap/)
+2. Use the [Docker image available on Docker hub](https://hub.docker.com/r/spreaker/aws-cloud-unmap/)
    ```
    docker run --env AWS_ACCESS_KEY_ID="id" --env AWS_SECRET_ACCESS_KEY="secret" spreaker/aws-cloud-unmap --service-id srv-12345 --service-region us-east-1 --instances-region us-east-1
    ```
