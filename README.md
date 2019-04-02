@@ -49,6 +49,43 @@ The cli supports the following arguments:
 | `--log-level LOG_LEVEL`                  |          | Minimum log level. Accepted values are: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. Defaults to `INFO` |
 
 
+## Required IAM privileges
+
+In order to successfully run, this application requires the following IAM privileges:
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid":      "DescribeEC2Instances",
+      "Effect":   "Allow",
+      "Action":   [ "ec2:DescribeInstances" ],
+      "Resource": "*"
+    },{
+      "Sid":      "ListAndDeregisterServiceInstances",
+      "Effect":   "Allow",
+      "Action":   [
+        "servicediscovery:ListInstances",
+        "servicediscovery:DeregisterInstance",
+        "route53:GetHealthCheck",
+        "route53:DeleteHealthCheck",
+        "route53:UpdateHealthCheck"
+      ],
+      "Resource": "*"
+    },{
+      "Sid":      "UpdateDnsWhileDeregisteringServiceInstances",
+      "Effect":   "Allow",
+      "Action":   [ "route53:ChangeResourceRecordSets" ],
+      "Resource": [
+        "ARN-OF-YOUR-ROUTE53-HOSTEDZONE"
+      ]
+    }
+  ]
+}
+```
+
+
 ## Development
 
 Run the development environment:
