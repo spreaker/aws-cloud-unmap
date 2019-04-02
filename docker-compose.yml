@@ -4,7 +4,8 @@ services:
   dev:
     build:
       context:    .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-dev
     command: [ "sh" ]
     volumes:
       - .:/app:delegated
+      - ~/.aws:/home/app/.aws:ro
