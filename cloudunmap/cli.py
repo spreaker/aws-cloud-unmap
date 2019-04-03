@@ -46,7 +46,6 @@ def reconcile(serviceId: str, serviceRegion: str, instancesRegion: List[str]):
         logger.error(f"An error occurred while reconciling service {serviceId}: {str(error)}")
         success = False
 
-    # Update
     if success:
         lastReconcileTimestampMetric.labels(serviceId).set(int(time.time()))
 
