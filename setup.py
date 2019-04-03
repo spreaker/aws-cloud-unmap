@@ -2,7 +2,7 @@ import sys
 from setuptools import setup
 
 # Version
-version = "1.0.4"
+version = "1.1.0"
 
 # Requires Python 3
 if sys.version_info.major < 3:
@@ -26,7 +26,7 @@ setup(
   keywords                      = ['aws', 'cloud map'],
   classifiers                   = [],
   python_requires               = ' >= 3',
-  install_requires              = ["boto3==1.9.123", "python-json-logger==0.1.10"],
+  install_requires              = ["boto3==1.9.123", "python-json-logger==0.1.10", "prometheus_client==0.6.0"],
   extras_require = {
     'dev': [
       'flake8==3.7.7',

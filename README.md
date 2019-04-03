@@ -46,7 +46,20 @@ The cli supports the following arguments:
 | `--instances-region REGION [REGION ...]` | yes      | AWS regions where EC2 instances should be checked |
 | `--frequency N`                          |          | How frequently the service should be reconciled (in seconds). Defaults to `300` sec |
 | `--single-run`                           |          | Run a single reconcile and then exit |
+| `--enable-prometheus`                    |          | Enable the Prometheus exporter. Disabled by default |
+| `--prometheus-host`                      |          | The host at which the Prometheus exporter should listen to. Defaults to `127.0.0.1` |
+| `--prometheus-port`                      |          | The port at which the Prometheus exporter should listen to. Defaults to `9100` |
 | `--log-level LOG_LEVEL`                  |          | Minimum log level. Accepted values are: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. Defaults to `INFO` |
+
+
+## Exported metrics
+
+The application features an integrated Prometheus exporter. The following metrics are exported:
+
+| Metric name                                                | Labels       | Description |
+| ---------------------------------------------------------- | ------------ | ----------- |
+| `aws_cloud_unmap_up`                                       | `service_id` | Always `1`: can be used to check if it's running |
+| `aws_cloud_unmap_last_reconcile_success_timestamp_seconds` | `service_id` | The timestamp (in seconds) of the last successful reconciliation |
 
 
 ## Required IAM privileges
