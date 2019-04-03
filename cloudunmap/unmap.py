@@ -39,6 +39,11 @@ def unmapTerminatedInstancesFromService(serviceId: str, serviceRegion: str, inst
     # List registered instances on CloudMap
     serviceInstances = listServiceInstances(serviceId, sdClient)
 
+    # Skip in case there are no registered instances
+    if not serviceInstances:
+        logger.info(f"No registered instances in the service {serviceId}. Skipping")
+        return True
+
     # Filter out service instances without the AWS_INSTANCE_IPV4 attribute
     # and extract instance ids
     serviceInstances = list(filter(lambda i: "AWS_INSTANCE_IPV4" in i["Attributes"], serviceInstances))
