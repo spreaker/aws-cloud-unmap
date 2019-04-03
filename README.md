@@ -62,6 +62,43 @@ The application features an integrated Prometheus exporter. The following metric
 | `aws_cloud_unmap_last_reconcile_success_timestamp_seconds` | `service_id` | The timestamp (in seconds) of the last successful reconciliation |
 
 
+## Required IAM privileges
+
+In order to successfully run, this application requires the following IAM privileges:
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid":      "DescribeEC2Instances",
+      "Effect":   "Allow",
+      "Action":   [ "ec2:DescribeInstances" ],
+      "Resource": "*"
+    },{
+      "Sid":      "ListAndDeregisterServiceInstances",
+      "Effect":   "Allow",
+      "Action":   [
+        "servicediscovery:ListInstances",
+        "servicediscovery:DeregisterInstance",
+        "route53:GetHealthCheck",
+        "route53:DeleteHealthCheck",
+        "route53:UpdateHealthCheck"
+      ],
+      "Resource": "*"
+    },{
+      "Sid":      "UpdateDnsWhileDeregisteringServiceInstances",
+      "Effect":   "Allow",
+      "Action":   [ "route53:ChangeResourceRecordSets" ],
+      "Resource": [
+        "ARN-OF-YOUR-ROUTE53-HOSTEDZONE"
+      ]
+    }
+  ]
+}
+```
+
+
 ## Development
 
 Run the development environment:
