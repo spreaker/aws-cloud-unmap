@@ -59,7 +59,7 @@ The application features an integrated Prometheus exporter. The following metric
 | Metric name                                                | Labels       | Description |
 | ---------------------------------------------------------- | ------------ | ----------- |
 | `aws_cloud_unmap_up`                                       | `service_id` | Always `1`: can be used to check if it's running |
-| `aws_cloud_unmap_last_reconcile_success_timestamp_seconds` | `service_id` | The epoch (seconds) of when a the service has been successfully reconciled the last time |
+| `aws_cloud_unmap_last_reconcile_success_timestamp_seconds` | `service_id` | The timestamp (in seconds) of the last successful reconciliation |
 
 
 ## Development
