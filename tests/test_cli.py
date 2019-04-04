@@ -24,7 +24,7 @@ class TestCli(unittest.TestCase):
         try:
             lastReconcileTimestampMetric.remove("srv-1")
             upMetric.remove("srv-1")
-        except KeyError as e:
+        except KeyError:
             pass
     #
     # main()
