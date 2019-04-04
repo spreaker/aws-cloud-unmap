@@ -90,3 +90,20 @@ class TestCli(unittest.TestCase):
 
         self.ec2Stubber.assert_no_pending_responses()
         self.sdStubber.assert_no_pending_responses()
+
+    def testMainShouldDoNotDeregisterInstancesIfThereAreNoRegisteredInstances(self):
+        # Mock Cloud Map client
+        self.sdStubber.add_response(
+            "list_instances",
+            {"Instances": []},
+            {"ServiceId": "srv-1", "MaxResults": 100})
+
+        with patch("boto3.client", side_effect=self.botoClientMock):
+            main(parseArguments(["--service-id", "srv-1", "--service-region", "eu-west-1", "--instances-region", "eu-west-1", "--single-run"]))
+
+        # Check exported metrics
+        self.assertEqual(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_up", labels={"service_id": "srv-1"}), 1)
+        self.assertIsNotNone(prometheusDefaultRegistry.get_sample_value("aws_cloud_unmap_last_reconcile_success_timestamp_seconds", labels={"service_id": "srv-1"}))
+
+        self.ec2Stubber.assert_no_pending_responses()
+        self.sdStubber.assert_no_pending_responses()
