@@ -3,7 +3,7 @@ import boto3
 import time
 from unittest.mock import patch
 from botocore.stub import Stubber
-from cloudunmap.cli import main, parseArguments
+from cloudunmap.cli import main, parseArguments, upMetric, lastReconcileTimestampMetric
 from .mocks import mockBotoClient, mockServiceInstance, mockEC2Instance
 from prometheus_client.registry import REGISTRY as prometheusDefaultRegistry
 
@@ -21,6 +21,11 @@ class TestCli(unittest.TestCase):
 
         self.botoClientMock = mockBotoClient({"ec2": self.ec2Client, "servicediscovery": self.sdClient})
 
+        try:
+            lastReconcileTimestampMetric.remove("srv-1")
+            upMetric.remove("srv-1")
+        except KeyError as e:
+            pass
     #
     # main()
     #
