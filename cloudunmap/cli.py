@@ -55,7 +55,7 @@ def main(args):
 
     # Init logger
     logHandler = logging.StreamHandler()
-    formatter = jsonlogger.JsonFormatter("(asctime) (levelname) (message)", datefmt="%Y-%m-%d %H:%M:%S")
+    formatter = jsonlogger.JsonFormatter("%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
     logHandler.setFormatter(formatter)
 
     logger = logging.getLogger()

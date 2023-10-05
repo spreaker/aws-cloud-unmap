@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.0.0 (2023-10-05)
+- Upgrade to Python 3.11
+- Upgrade dependencies
+
 ### 1.1.1 (2019-04-04)
 - [BUGFIX] Do not fail the reconciling if there are no instances registered to the service - PR [#8](https://github.com/spreaker/aws-cloud-unmap/pull/8)
 - Documented required IAM privileges - PR [#7](https://github.com/spreaker/aws-cloud-unmap/pull/7)
