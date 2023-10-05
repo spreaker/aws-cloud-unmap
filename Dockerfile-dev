@@ -1,8 +1,10 @@
-FROM alpine:3.9
+FROM alpine:3.18
 
 # Installing required packages
 RUN apk add --update --no-cache \
-    python3~=3.6
+    gcc libc-dev libffi-dev \
+    python3~=3.11 python3-dev~=3.11 \
+    py3-pip
 
 # Install app code
 RUN mkdir /app

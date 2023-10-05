@@ -2,7 +2,7 @@ import sys
 from setuptools import setup
 
 # Version
-version = "1.1.1"
+version = "2.0.0"
 
 # Requires Python 3
 if sys.version_info.major < 3:
@@ -19,18 +19,18 @@ setup(
   description                   = 'Remove terminated EC2 instances from AWS CloudMap service',
   long_description              = long_description,
   long_description_content_type = 'text/markdown',
-  author                        = 'Marco Pracucci',
-  author_email                  = 'marco@pracucci.com',
+  author                        = 'Spreaker',
+  author_email                  = 'dev@spreaker.com',
   url                           = 'https://github.com/spreaker/aws-cloud-unmap',
   download_url                  = f'https://github.com/spreaker/aws-cloud-unmap/archive/{version}.tar.gz',
   keywords                      = ['aws', 'cloud map'],
   classifiers                   = [],
-  python_requires               = ' >= 3',
-  install_requires              = ["boto3==1.9.123", "python-json-logger==0.1.10", "prometheus_client==0.6.0"],
+  python_requires               = ' >= 3.11',
+  install_requires              = ["boto3==1.28.53", "python-json-logger==2.0.7", "prometheus_client==0.17.1"],
   extras_require = {
     'dev': [
-      'flake8==3.7.7',
-      'twine==1.13.0'
+      'flake8==6.1.0',
+      'twine==4.0.2'
     ]
   },
   entry_points = {

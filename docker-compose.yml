@@ -9,3 +9,5 @@ services:
     volumes:
       - .:/app:delegated
       - ~/.aws:/home/app/.aws:ro
+    environment:
+      - AWS_DEFAULT_REGION=us-east-1
