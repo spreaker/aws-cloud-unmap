@@ -114,6 +114,30 @@ python3 -m unittest
 ```
 
 
+## Build & Push (Public ECR)
+
+Build the Docker image from this directory, then push it to `Public ECR` for `spreaker`.
+
+`Public ECR` is located in the `infrastructure prod` AWS account, so you need to use the corresponding AWS profile.
+
+### Commands example
+
+```sh
+# Make sure you use the `infra-prod` AWS profile (used for `aws ecr-public login`).
+aws ecr-public get-login-password --profile infra-prod --region us-east-1 \
+  | docker login --username AWS --password-stdin public.ecr.aws/spreaker
+
+# 1) Build
+docker build -t aws-cloud-unmap:2.0.0 .
+
+# 2) Tag
+docker tag aws-cloud-unmap:2.0.0 \
+  public.ecr.aws/spreaker/aws-cloud-unmap:2.0.0
+
+# 3) Push
+docker push public.ecr.aws/spreaker/aws-cloud-unmap:2.0.0
+```
+
 ## License
 
 This software is released under the [MIT license](LICENSE.txt).
