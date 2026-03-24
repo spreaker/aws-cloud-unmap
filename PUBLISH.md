@@ -25,9 +25,14 @@
    ```
    docker tag aws-cloud-unmap:REPLACE-VERSION \
      public.ecr.aws/spreaker/aws-cloud-unmap:REPLACE-VERSION
+
+   docker tag aws-cloud-unmap:REPLACE-VERSION \
+     public.ecr.aws/spreaker/aws-cloud-unmap:latest
    ```
 
 5. Push image to `Public ECR`
    ```
    docker push public.ecr.aws/spreaker/aws-cloud-unmap:REPLACE-VERSION
+
+   docker push public.ecr.aws/spreaker/aws-cloud-unmap:latest
    ```
