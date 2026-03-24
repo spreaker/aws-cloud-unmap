@@ -113,7 +113,6 @@ Run tests in the dev environment:
 python3 -m unittest
 ```
 
-
 ## License
 
 This software is released under the [MIT license](LICENSE.txt).

@@ -11,16 +11,28 @@
 **Release Docker image**:
 
 1. Update package version in `Dockerfile`
-2. Build image
+2. Login to `Public ECR` (infrastructure prod account, profile `infra-prod`)
    ```
-   docker rmi -f aws-cloud-unmap && \
-   docker build -t aws-cloud-unmap .
+   aws ecr-public get-login-password --profile infra-prod --region us-east-1 \
+     | docker login --username AWS --password-stdin public.ecr.aws/spreaker
    ```
-3. Tag the image and push it to Docker Hub
+3. Build image
    ```
-   docker tag aws-cloud-unmap spreaker/aws-cloud-unmap:latest && \
-   docker push spreaker/aws-cloud-unmap:latest
+   docker build -t aws-cloud-unmap:REPLACE-VERSION .
+   ```
 
-   docker tag aws-cloud-unmap spreaker/aws-cloud-unmap:REPLACE-VERSION && \
-   docker push spreaker/aws-cloud-unmap:REPLACE-VERSION
+4. Tag image for `Public ECR`
+   ```
+   docker tag aws-cloud-unmap:REPLACE-VERSION \
+     public.ecr.aws/spreaker/aws-cloud-unmap:REPLACE-VERSION
+
+   docker tag aws-cloud-unmap:REPLACE-VERSION \
+     public.ecr.aws/spreaker/aws-cloud-unmap:latest
+   ```
+
+5. Push image to `Public ECR`
+   ```
+   docker push public.ecr.aws/spreaker/aws-cloud-unmap:REPLACE-VERSION
+
+   docker push public.ecr.aws/spreaker/aws-cloud-unmap:latest
    ```
